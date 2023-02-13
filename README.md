@@ -8,3 +8,16 @@ uses [GNOME](https://www.gnome.org/) technologies, and so it has complete integr
 This software is licensed under the [GPL 3](https://github.com/gnome-pomodoro/gnome-pomodoro/blob/master/COPYING).
 
 *This project is not affiliated with, authorized by, sponsored by, or otherwise approved by GNOME Foundation and/or the Pomodoro Technique®. The GNOME logo and GNOME name are registered trademarks or trademarks of GNOME Foundation in the United States or other countries. The Pomodoro Technique® and Pomodoro™ are registered trademarks of Francesco Cirillo.*
+
+
+# My Mods
+
+## ```hh:mm:ss``` format 
+
+![](https://github.com/freakinu/gnome-pomodoro/raw/master/new_format.png)
+
+## 8 hours limit
+
+![](https://github.com/freakinu/gnome-pomodoro/raw/master/new_hours_limit.png)
+
+
