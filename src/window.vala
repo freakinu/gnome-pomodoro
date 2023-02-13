@@ -70,19 +70,13 @@ namespace Pomodoro
         [GtkChild]
         private unowned Gtk.ToggleButton state_togglebutton;
         [GtkChild]
-        private unowned Gtk.Label minutes_label;
-        [GtkChild]
-        private unowned Gtk.Label seconds_label;
+        private unowned Gtk.Label formated_label;
         [GtkChild]
         private unowned Gtk.Widget timer_box;
         [GtkChild]
-        private unowned Gtk.Button pause_resume_button;
+        private unowned Gtk.Button pause_button;
         [GtkChild]
-        private unowned Gtk.Button skip_stop_button;
-        [GtkChild]
-        private unowned Gtk.Image pause_resume_image;
-        [GtkChild]
-        private unowned Gtk.Image skip_stop_image;
+        private unowned Gtk.Image pause_button_image;
 
         private Pomodoro.Animation blink_animation;
         private string default_page;
@@ -118,8 +112,6 @@ namespace Pomodoro
             this.on_timer_state_notify ();
             this.on_timer_elapsed_notify ();
             this.on_timer_is_paused_notify ();
-
-            this.update_buttons();
         }
 
         public void parser_finished (Gtk.Builder builder)
@@ -140,52 +132,6 @@ namespace Pomodoro
             this.timer.notify["is-paused"].connect_after (this.on_timer_is_paused_notify);
         }
 
-        private void update_buttons ()
-        {
-            if (this.timer.is_paused) {
-                this.pause_resume_image.icon_name = "media-playback-start-symbolic";
-                this.pause_resume_button.action_name = "timer.resume";
-                this.skip_stop_image.icon_name = "media-playback-stop-symbolic";
-                this.skip_stop_button.action_name = "timer.stop";
-            }
-            else {
-                this.pause_resume_image.icon_name = "media-playback-pause-symbolic";
-                this.pause_resume_button.action_name = "timer.pause";
-                this.skip_stop_image.icon_name = "media-skip-forward-symbolic";
-                this.skip_stop_button.action_name = "timer.skip";
-            }
-
-            switch (this.timer.state.name)
-            {
-                case "pomodoro":
-                    if (this.timer.is_paused) {
-                        this.pause_resume_button.tooltip_text = _("Resume Pomodoro");
-                        this.skip_stop_button.tooltip_text = _("Stop");
-                    }
-                    else {
-                        this.pause_resume_button.tooltip_text = _("Pause Pomodoro");
-                        this.skip_stop_button.tooltip_text = _("Take a break");
-                    }
-
-                    break;
-
-                case "short-break":
-                case "long-break":
-                    if (this.timer.is_paused) {
-                        this.pause_resume_button.tooltip_text = _("Resume break");
-                        this.skip_stop_button.tooltip_text = _("Stop");
-                    }
-                    else {
-                        this.pause_resume_button.tooltip_text = _("Pause break");
-                        this.skip_stop_button.tooltip_text = _("Start Pomodoro");
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         private void on_blink_animation_complete ()
         {
             if (this.timer.is_paused) {
@@ -197,8 +143,6 @@ namespace Pomodoro
         {
             this.timer_stack.visible_child_name = 
                     (this.timer.state is Pomodoro.DisabledState) ? "disabled" : "enabled";
-
-            this.update_buttons();
 
             foreach (var mapping in STATE_NAMES)
             {
@@ -214,12 +158,8 @@ namespace Pomodoro
             if (!(this.timer.state is Pomodoro.DisabledState))
             {
                 var remaining = (uint) double.max (Math.ceil (this.timer.remaining), 0.0);
-                var minutes   = remaining / 60;
-                var seconds   = remaining % 60;
-
-                this.minutes_label.label = "%02u".printf (minutes);
-                this.seconds_label.label = "%02u".printf (seconds);
-
+                this.formated_label.label = format_time2((int) remaining);
+                
                 this.timer_box.queue_draw ();
             }
         }
@@ -231,9 +171,11 @@ namespace Pomodoro
                 this.blink_animation = null;
             }
 
-            this.update_buttons();
-
             if (this.timer.is_paused) {
+                this.pause_button_image.icon_name = "media-playback-start-symbolic";
+                this.pause_button.action_name     = "timer.resume";
+                this.pause_button.tooltip_text    = _("Resume");
+
                 this.blink_animation = new Pomodoro.Animation (Pomodoro.AnimationMode.BLINK,
                                                                2500,
                                                                25);
@@ -244,6 +186,10 @@ namespace Pomodoro
                 this.blink_animation.start_with_value (1.0);
             }
             else {
+                this.pause_button_image.icon_name = "media-playback-pause-symbolic";
+                this.pause_button.action_name     = "timer.pause";
+                this.pause_button.tooltip_text    = _("Pause");
+
                 this.blink_animation = new Pomodoro.Animation (Pomodoro.AnimationMode.EASE_OUT,
                                                                200,
                                                                50);
