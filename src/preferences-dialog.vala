@@ -24,7 +24,7 @@ using GLib;
 namespace Pomodoro
 {
     const double TIMER_SCALE_LOWER = 60.0;
-    const double TIMER_SCALE_UPPER = 60.0 * 120.0;
+    const double TIMER_SCALE_UPPER = 60.0 * 480.0;
 
     const double LONG_BREAK_INTERVAL_LOWER = 1.0;
     const double LONG_BREAK_INTERVAL_UPPER = 10.0;
