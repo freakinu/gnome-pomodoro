@@ -45,6 +45,15 @@ namespace Pomodoro
         return str;
     }
 
+    private string format_time2(int seconds){
+        var minutes = (seconds / 60) % 60;
+        var hours = (seconds / 3600);
+        seconds = seconds % 60;
+        var str = "%02u:%02u:%02u".printf(hours, minutes, seconds);
+
+        return str;
+    }
+
     /**
      * Returns the number of seconds since January 1, 1970 UTC.
      */
